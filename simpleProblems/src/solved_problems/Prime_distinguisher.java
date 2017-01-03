@@ -30,7 +30,7 @@ public class Prime_distinguisher {
 			if(aliquot == false)
 				System.out.println(ranVar + " is prime");
 			else
-				System.out.println(ranVar + " not prime");
+				System.out.println(ranVar + " is not prime");
 		}
 	}
 }
