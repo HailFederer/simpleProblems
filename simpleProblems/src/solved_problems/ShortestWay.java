@@ -1,4 +1,4 @@
-package unsolved_problems;
+package solved_problems;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
