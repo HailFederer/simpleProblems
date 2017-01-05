@@ -19,8 +19,8 @@ public class ShortestWay {
 		String line = "";
 		String[] input = null;
 		
-		// - height: 지도의 세로 크기
-		// - width: 지도의 가로 크기
+		// - height: 지도의 세로 크기.
+		// - width: 지도의 가로 크기.
 		int height = 0, width = 0;
 		do{
 			System.out.println("※띄어쓰기로 입력숫자 구분");
@@ -38,7 +38,8 @@ public class ShortestWay {
 			
 		}while(height<2 || width<2);
 		
-		// 지도 배열
+		// 지도 배열 입력.
+		// 입력한 지도에 길이 최소한 두 지점 이상일 때까지 입력 반복.
 		int[][] map;
 		boolean roadExist = false;
 		do{
@@ -78,9 +79,9 @@ public class ShortestWay {
 			}
 		}while(roadExist==false);
 		
+		// 출발지점과 도착지점을 입력받아 최단거리 및 경로 찾아 출력해주는 루틴 반복.
 		while(true){
-			
-			// 출발지점과 도착지점 지정을 돕기위한 지도 출력
+			// 출발지점과 도착지점 지정을 돕기위한 지도 출력.
 			for(int i=0; i<width/2; i++){
 				System.out.print("　");
 			}
@@ -114,6 +115,7 @@ public class ShortestWay {
 			}
 			System.out.println("┘");
 			
+			// 출발지점 좌표 입력.
 			// - curX: 현재의 X좌표 / curY: 현재의 Y좌표
 			System.out.println();
 			int curX=0, curY=0;
@@ -134,6 +136,7 @@ public class ShortestWay {
 				
 			}while(curX<0 || curX>height-1 || curY<0 || curY>width-1 || map[curX][curY]==1);
 			
+			// 도착지점 좌표 입력.(출발지점과 같은 지점 불가.)
 			// - targetX: 도착지점의 X좌표 / targetY: 도착지점의 Y좌표
 			System.out.println();
 			int targetX=0, targetY=0;
@@ -174,13 +177,14 @@ public class ShortestWay {
 			List<Map<String, Object>> CrossroadsList = new ArrayList<Map<String, Object>>();
 			List<Map<String, Object>> RouteList = new ArrayList<Map<String, Object>>();
 			
+			// 좌표가 하나씩 이동될 때마다 실행할 루틴.
 			while(true){
 				
-				// 교차로에서 '나아갈' 분기의 방향들을 담은 리스트 객체 반환.
+				// CrossroadsKinds: 교차로에서 '나아갈' 분기의 방향들을 담은 리스트 객체.
 				CrossroadsDistinguisher CD = new CrossroadsDistinguisher(preX, preY, curX, curY, map, width, height);
 				List<String> CrossroadsKinds = CD.CrossroadsDistinguish();
 				
-				// 현재 좌표가 이미 지나온 곳인지를 판별하기 위해 필요한 Map 객체들 생성.
+				// Crossroads1,2,3,4: 현재 좌표가 이미 지나온 곳인지를 판별하기 위해 필요한 Map 객체들.
 				Map<String, Object> Crossroads1 = new HashMap<String, Object>();
 				Crossroads1.put("X", curX);
 				Crossroads1.put("Y", curY);
@@ -231,7 +235,7 @@ public class ShortestWay {
 						}
 					}
 					
-					// < 프로그램 종료 판별 로직 : 시작 >
+					// < 프로그램 종료 판별 로직 >
 					// - 입구로부터 이어진 모든 길을 한번씩 지나도록 설계함.
 					// - 교차로를 지날 때는 지나친 분기의 좌표와 모든 방향을 각각 
 					//  이동경로 리스트 객체에 저장해둠.
@@ -255,7 +259,6 @@ public class ShortestWay {
 					if(cnt==CrossroadsList.size()){
 						break;
 					}
-					//// < 프로그램 종료 판별 로직 : 끝 >
 	
 					// - 막다른 골목이나 도착지점, 이미 지나온 경로에 이르렀을 때,
 					//  바로 직전의 분기로 돌아올 때까지,
@@ -272,6 +275,8 @@ public class ShortestWay {
 							break;
 						}
 					}
+					// 돌아온 직전 분기 바로 이전의 좌표에서 해당 분기로 이동할 때 더해줬던
+					// 이동거리 1까지 빼 준 상태이므로 다시 1 추가.
 					distance++;
 					
 					// - 현재 위치의 X좌표와 Y좌표를 입력하는 변수 preX와 preY에 각각,
@@ -311,21 +316,26 @@ public class ShortestWay {
 						CrossroadsList.add(Crossroads6);
 					}
 					
+					// 좌표 이동 후, 이동거리 1 추가.
 					distance++;
 				}
+				// 막다른 골목에 이르거나, 도착지점에 다다르거나, 이미 지나온 곳이 아닐 때.
 				else{
-					
+					// 나아갈 방향이 한 곳 뿐일 때. 
 					if(CrossroadsKinds.size() == 1){
 						
+						// 현재의 좌표를 이동경로에 추가.
 						Crossroads = new HashMap<String, Object>();
 						Crossroads.put("X", curX);
 						Crossroads.put("Y", curY);
 						Crossroads.put("direction", null);
 						CrossroadsList.add(Crossroads);
-		
+						
+						// 좌표를 이동시키기 전, 현재의 좌표를 이전의 좌표를 담는 변수에 대입.
 						preX=curX;
 						preY=curY;
 						
+						// 나아갈 분기 방향 정보에 따라 좌표 이동.
 						if(CrossroadsKinds.get(0)=="right"){
 							curY++;
 						}else if(CrossroadsKinds.get(0)=="up"){
@@ -336,10 +346,12 @@ public class ShortestWay {
 							curX++;
 						}
 					}
+					// 나아갈 방향이 두 곳 이상일 때.
 					else if(CrossroadsKinds.size() > 1){
 						
-						int i;
-						for(i=0; i<CrossroadsKinds.size()-1; i++){
+						// 나아갈 분기를 제외한, 나머지 분기에 대한 방향 정보를 
+						// 좌표와 함께 이동경로 리스트에 추가.
+						for(int i=0; i<CrossroadsKinds.size()-1; i++){
 							
 							Crossroads = new HashMap<String, Object>();
 							Crossroads.put("X", curX);
@@ -348,9 +360,12 @@ public class ShortestWay {
 							CrossroadsList.add(Crossroads);
 						}
 						
+						// 좌표를 이동시키기 전, 현재의 좌표를 이전의 좌표를 담는 변수에 대입.
 						preX=curX;
 						preY=curY;
 						
+						// 나아갈 분기 방향 정보에 따라 좌표 이동.
+						int i = CrossroadsKinds.size()-1;
 						if(CrossroadsKinds.get(i)=="right"){
 							curY++;
 						}else if(CrossroadsKinds.get(i)=="up"){
@@ -362,12 +377,13 @@ public class ShortestWay {
 						}
 					}
 					
+					// 좌표 이동 후, 이동거리 1 추가.
 					distance++;
 				}
 				
 			}
 			
-			// 최단경로들의 좌표를 담은 리스트 객체의 중복좌표 제거
+			// 최단경로들의 좌표를 담은 리스트 객체의 중복좌표 제거.
 			int a;
 			int b=RouteList.size();
 			for(a=0; a<b; a++){
@@ -376,12 +392,14 @@ public class ShortestWay {
 					RouteList.remove(b-a-1);
 			}
 			
+			// 최단경로들의 좌표를 담은 리스트 객체에 담긴 정보를 살펴보기 위한 TEST 코드.
 			/*Iterator<Map<String, Object>> it2 = RouteList.iterator();
 			while(it2.hasNext()){
 				Map<String, Object> k = it2.next();
 				System.out.println("("+k.get("X")+","+k.get("Y")+") "+k.get("direction"));
 			}*/
-	
+			
+			// 최단거리 및 최단경로 수 출력.(단, 길이 존재하지 않을 시 별도의 메세지 출력.)
 			System.out.println();
 			if(finalDistance==height*width)
 				System.out.println("- 도착지점으로 가는 길이 존재하지 않음.");
@@ -389,7 +407,8 @@ public class ShortestWay {
 				System.out.println("- 최단거리 : "+finalDistance);
 				System.out.println("- 최단경로 수 : "+RouteList.size()/finalDistance);
 			}
-			
+
+			// 모든 최단경로를 지도 상에 출력.
 			System.out.println();
 			int m=0;
 			for(int k=0; k<(RouteList.size()/finalDistance); k++){
@@ -441,6 +460,7 @@ public class ShortestWay {
 	}
 }
 
+// 교차로에 진입 시, 분기의 방향을 판별해, 리스트 객체에 적재 후 돌려주는 클래스.
 class CrossroadsDistinguisher{
 
 	int width, height;
@@ -461,20 +481,29 @@ class CrossroadsDistinguisher{
 	public List<String> CrossroadsDistinguish(){
 		
 		List<String> CrossroadsKinds = new ArrayList<String>();
-
+		
+		// X좌표가 지도 상에서 최하단이 아니고, 아래 좌표의 값이 '0'(길)이며,
+		// 마찬가지로 아래 좌표가 이미 지나온 좌표가 아닐 때, 아래 방향 추가.
 		if(curX!=height-1 && map[curX+1][curY]==0 && preX!=(curX+1)){
 			CrossroadsKinds.add("down");
 		}
+		// Y좌표가 지도 상에서 제일 왼쪽이 아니고, 왼쪽 좌표의 값이 '0'(길)이며,
+		// 마찬가지로 왼쪽 좌표가 이미 지나온 좌표가 아닐 때, 왼쪽 방향 추가.
 		if(curY!=0 && map[curX][curY-1]==0 && preY!=(curY-1)){
 			CrossroadsKinds.add("left");
 		}
+		// X좌표가 지도 상에서 최상단이 아니고, 위 좌표의 값이 '0'(길)이며,
+		// 마찬가지로 위 좌표가 이미 지나온 좌표가 아닐 때, 위 방향 추가.
 		if(curX!=0 && map[curX-1][curY]==0 && preX!=(curX-1)){
 			CrossroadsKinds.add("up");
 		}
+		// Y좌표가 지도 상에서 제일 오른쪽이 아니고, 오른쪽 좌표의 값이 '0'(길)이며,
+		// 마찬가지로 오른쪽 좌표가 이미 지나온 좌표가 아닐 때, 오른쪽 방향 추가.
 		if(curY!=width-1 && map[curX][curY+1]==0 && preY!=(curY+1)){
 			CrossroadsKinds.add("right");
 		}
 		
+		// 분기 방향을 담은 리스트 객체 리턴
 		return CrossroadsKinds;
 	}
 }
